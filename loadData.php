@@ -9,7 +9,12 @@ include_once ("configDb.php");
 /*                                                                            */
 /******************************************************************************/
 
-$tmp = file_get_contents("https://api.tfl.lu/v1/BikePoint");
+$tmp = my_get("https://api.tfl.lu/v1/BikePoint");
+if ($tmp == false)
+{
+    http_response_code(444);
+    die();
+}
 $infoBike = json_decode($tmp, true);
 
 
@@ -49,7 +54,12 @@ foreach ($infoBike['features'] as $data)
 /*                                                                             */
 /*******************************************************************************/
 
-$tmp = file_get_contents("https://api.tfl.lu/v1/Line/Mode/bus/Route");
+$tmp = my_get("https://api.tfl.lu/v1/Line/Mode/bus/Route");
+if ($tmp == false)
+{
+    http_response_code(444);
+    die();
+}
 $infoRoute = json_decode($tmp, true);
 
 
@@ -87,7 +97,12 @@ foreach ($infoRoute as $data)
 /*                                                                             */
 /*******************************************************************************/
 
-$tmp = file_get_contents("https://api.tfl.lu/v1/StopPoint");
+$tmp = my_get("https://api.tfl.lu/v1/StopPoint");
+if ($tmp == false)
+{
+    http_response_code(444);
+    die();
+}
 $infoBus = json_decode($tmp, true);
 
 
