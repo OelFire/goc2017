@@ -1,5 +1,10 @@
 <?php
 
+function sendData($response) {
+  header('Content-Type: application/json');
+  echo json_encode($response, JSON_PRETTY_PRINT);
+}
+
 function my_get($URL)
 {
   $c = curl_init();
