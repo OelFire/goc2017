@@ -27,7 +27,7 @@ foreach ($infoBike['features'] as $data)
             'nameStation' => $data['properties']['name'],
             'longitude' => $data['geometry']['coordinates'][0],
             'latitude' => $data['geometry']['coordinates'][1]));
-        echo "update\n";
+        echo "update bike station\n";
     }
     else
     {
@@ -38,7 +38,7 @@ foreach ($infoBike['features'] as $data)
             'nameStation' => $data['properties']['name'],
             'longitude' => $data['geometry']['coordinates'][0],
             'latitude' => $data['geometry']['coordinates'][1]));
-        echo "insert\n";
+        echo "insert bike station\n";
     }
 }
 
@@ -53,68 +53,68 @@ $tmp = file_get_contents("https://api.tfl.lu/v1/Line/Mode/bus/Route");
 $infoRoute = json_decode($tmp, true);
 
 
-foreach ($infoRoute['features'] as $data)
+foreach ($infoRoute as $data)
 {
-    $id = $bdd->prepare("SELECT `idStation` FROM `station` WHERE `idStationApi` = :idStationApi");
-    $id->execute(array('idStationApi' => $data['properties']['id']));
-    if ($id->rowCount() > 0)
+    $id = $bdd->prepare("SELECT count(*) AS 'nbId' FROM `busRoute` WHERE `idBusRoute` = :idBusRoute");
+    $id->execute(array('idBusRoute' => $data['id']));
+    $value = $id->fetch()['nbId'];
+    if ($value > 0)
     {
-        $idStation = $id->fetch()['idStation'];
-        $request =  $bdd->prepare("UPDATE `station` SET `idStationApi`=:idStationApi,`name`=:nameStation,
-                                   `longitude`=:longitude,`latitude`=:latitude WHERE `idStation` = :idStation");
-        $request->execute(array('idStation' => $idStation,
-            'idStationApi' => $data['properties']['id'],
-            'nameStation' => $data['properties']['name'],
-            'longitude' => $data['geometry']['coordinates'][0],
-            'latitude' => $data['geometry']['coordinates'][1]));
-        echo "update\n";
+        $request =  $bdd->prepare("UPDATE `busRoute` SET `idBusRouteApi`=:idBusRouteApi,`name`=:namebusRoute, 
+                                   `stopPointList` = :stopPointList WHERE `idBusRoute` = :idBusRoute");
+        $request->execute(array('idBusRoute' => $idBusRoute,
+            'idBusRouteApi' => $data['id'],
+            'namebusRoute' => $data['name'],
+            'stopPointList' => serialize($data['stopPoints'])));
+        echo "update busRoute\n";
     }
     else
     {
-        $request = $bdd->prepare("INSERT INTO `station` (`idStationApi`, `name`, `longitude`, `latitude`)
-                          VALUES (:idStationApi, :nameStation, :longitude, :latitude)");
+        $request = $bdd->prepare("INSERT INTO `busRoute` (`idBusRoute`, `name`, `stopPointList`)
+                          VALUES (:idBusRoute, :namebusRoute, :stopPointList)");
 
-        $request->execute(array('idStationApi' => $data['properties']['id'],
-            'nameStation' => $data['properties']['name'],
-            'longitude' => $data['geometry']['coordinates'][0],
-            'latitude' => $data['geometry']['coordinates'][1]));
-        echo "insert\n";
+        $request->execute(array('idBusRoute' => $data['id'],
+            'namebusRoute' => $data['name'],
+            'stopPointList' => serialize($data['stopPoints'])));
+        echo "insert busRoute\n";
     }
 }
 
-/*$tmp = file_get_contents("https://api.tfl.lu/v1/StopPoint");
+
+/*******************************************************************************/
+/*                                                                             */
+/* Fill table 'stopPoint' wich contain the informations about stop points  */
+/*                                                                             */
+/*******************************************************************************/
+
+$tmp = file_get_contents("https://api.tfl.lu/v1/StopPoint");
 $infoBus = json_decode($tmp, true);
 
 
 foreach ($infoBus['features'] as $data)
 {
-    $id = $bdd->prepare("SELECT count(*) FROM `stopPoint` WHERE `idStopPoint` = :idStopPoint");
+    $id = $bdd->prepare("SELECT count(*) AS 'nbId' FROM `stopPoint` WHERE `idStopPoint` = :idStopPoint");
     $id->execute(array('idStopPoint' => $data['properties']['id']));
-    if ($id->rowCount() > 0)
+    $value = $id->fetch()['nbId'];
+    if ($value > 0)
     {
-        $idStation = $id->fetch()['idStation'];
-        $request =  $bdd->prepare("UPDATE `stopPoint` SET `idStopPoint`=:idStopPoint,`name`=:nameStation,
-                                   `longitude`=:longitude,`latitude`=:latitude WHERE `idStation` = :idStation");
-        $request->execute(array('idStation' => $idStation,
-            'idStationApi' => $data['properties']['id'],
-            'nameStation' => $data['properties']['name'],
+        $request =  $bdd->prepare("UPDATE `stopPoint` SET `name`=:nameStopPoint, `longitude`=:longitude,
+                                  `latitude`=:latitude WHERE `idStopPoint` = :idStopPoint");
+        $request->execute(array('idStopPoint' => $data['properties']['id'],
+            'nameStopPoint' => $data['properties']['name'],
             'longitude' => $data['geometry']['coordinates'][0],
-            'latitude' => $data['geometry']['coordinates'][1],
-            'busStation' => 0,
-            'busLines' => NULL));
-        echo "update\n";
+            'latitude' => $data['geometry']['coordinates'][1]));
+        echo "update stopPoint\n";
     }
     else
     {
-        $request = $bdd->prepare("INSERT INTO `stopPoint` (`idStationApi`, `name`, `longitude`, `latitude`)
-                          VALUES (:idStationApi, :nameStation, :longitude, :latitude)");
+        $request = $bdd->prepare("INSERT INTO `stopPoint` (`idStopPoint`, `name`, `longitude`, `latitude`)
+                          VALUES (:idStopPoint, :nameStopPoint, :longitude, :latitude)");
 
-        $request->execute(array('idStationApi' => $data['properties']['id'],
-            'nameStation' => $data['properties']['name'],
+        $request->execute(array('idStopPoint' => $data['properties']['id'],
+            'nameStopPoint' => $data['properties']['name'],
             'longitude' => $data['geometry']['coordinates'][0],
-            'latitude' => $data['geometry']['coordinates'][1],
-            'busStation' => 0,
-            'busLines' => NULL));
-        echo "insert\n";
+            'latitude' => $data['geometry']['coordinates'][1]));
+        echo "insert stopPoint\n";
     }
-}*/
+}
