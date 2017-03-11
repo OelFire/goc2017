@@ -17,21 +17,6 @@ function my_get($URL)
   else return FALSE;
 }
 
-function get_info_station($id)
-{
-  $dataJ = my_get('https://api.jcdecaux.com/vls/v1/stations/'.$id.'?contract=Nancy&apiKey=58a7596376f3ae8c4af270a5abc6b7c04ecff44c');
-  $data = json_decode($dataJ);
-  $new_data = array('banking' => $data->{'banking'},
-		    'status' => $data->{'status'},
-		    'nb_place' => $data->{'bike_stands'},
-		    'nb_libre' => $data->{'available_bike_stands'},
-		    'nb_dispo' => $data->{'available_bikes'},
-		    'longitude' => $data->{'position'}->{'lng'},
-		    'latitude' => $data->{'position'}->{'lat'},
-		    'nom' => $data->{'name'});
-  return ($new_data);
-}
-
 function get_total_station()
 {
   global $bdd;
@@ -75,58 +60,122 @@ $adress = $rue." ".$ville." ".$departement." ".$pays;
 echo $adress;
 }
 
-function get_closest_station($coordinate)
+function getInfoStation($id)
 {
-  $key = "AIzaSyAiht4VjPTI9bMut7kT0fe6WYx-67Xv9GQ";
+    global $bdd;
+
+    $request = $bdd->prepare("SELECT * FROM `station` WHERE `idStationApi` = :id");
+    $request->execute(array('id' => $id));
+    $infoStation = $request->fetch(PDO::FETCH_ASSOC);
+
+    $tmp = my_get("https://api.tfl.lu/v1/BikePoint/{$id}");
+    $info = json_decode($tmp, true);
+    $data = new stdClass();
+    $data->elecBike = $info['properties']['available_ebikes'];
+    $data->manualBike = $info['properties']['available_bikes'];
+    $data->freeDocks = $info['properties']['available_docks'];
+    $data->totalDocks = $info['properties']['docks'];
+    $data->picture = $info['properties']['photo'];
+    $data->address = $info['properties']['address'];
+    $data->city = $info['properties']['city'];
+    $data->open = $info['properties']['open'];
+    $data->name = $infoStation['name'];
+    $data->id = $infoStation['idStationApi'];
+    $data->coordinates = array('long' => $infoStation['longitude'],'lat' => $infoStation['latitude']);
+    //var_dump($data);
+    return ($data);
+}
+
+function getClosestStation($coordinate)
+{
   global $bdd;
-  $data = $bdd->prepare('select `id`, `latitude`, `longitude`, SQRT( ABS(`latitude`-'.$coordinate['lat'].'))+SQRT(ABS(`longitude`-'.$coordinate['long'].')) AS `test` from stations_velo where SQRT( ABS(`latitude`-'.$coordinate['lat'].'))+SQRT(ABS(`longitude`-'.$coordinate['long'].')) is not null order by test asc limit 3');
+  $data = $bdd->prepare("SELECT `idStationApi`, `latitude`, `longitude`, SQRT( ABS(`latitude`-{$coordinate['lat']}))+SQRT(ABS(`longitude` - {$coordinate['long']})) AS 'test' FROM `station` WHERE SQRT( ABS(`latitude` - {$coordinate['lat']}))+SQRT(ABS(`longitude` - {$coordinate['long']})) IS NOT null ORDER BY test ASC limit 3");
   $data->execute();
 
   $tab_data = array();
-  while ($data2 = $data->fetch())
-    array_push($tab_data, $data2);
-  $stop = 1;
-  while ($stop == 1)
-    {
-      $stop = 0;
-      foreach($tab_data as $data2)
-	{
-	    $dist = my_get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='.$coordinate['lat'].','.$coordinate['long'].'&destinations='.$data2["latitude"].','.$data2["longitude"].'&mode=walking');
-	  $dist = json_decode($dist);
-	  //var_dump($dist);
-	  if (!isset($dist->{'rows'}[0]->{'elements'}[0]->{'distance'}->{'value'}))
-	    {
-	      var_dump($dist);
-	      die("error");
-	    }
-	  $cur_dist = $dist->{'rows'}[0]->{'elements'}[0]->{'distance'}->{'value'};
-	  if (!isset($min_dist))
-	    {
-	      $id_min_dist = $data2['id'];
-	      $min_dist = $cur_dist;
-	    }
-	  elseif ($min_dist >= $cur_dist)
-	    {
-	      $id_min_dist = $data2['id'];
-	      $min_dist = $cur_dist;
-	    }
-	}
-      $info = get_info_station($id_min_dist);
-      /* if ($info['nb_dispo'] == 0)
-	 {
-	 $i = 0;
-	 $stop = 1;
-	 while($tab_data[$i])
-	 {
-	 if ($tab_data[$i]['id'] == $id_min_dist)
-	 unset($tab_data[$i]);
-	 $i++;
-	 }
-	 }*/
-    }
-  array_push($info, $min_dist);
-  //var_dump($info);
+  while ($data2 = $data->fetch(PDO::FETCH_ASSOC))
+  {
+      array_push($tab_data, $data2);
+  }
+  foreach ($tab_data as $data2)
+  {
+      $dist = my_get('https://maps.googleapis.com/maps/api/distancematrix/json?origins=' . $coordinate['lat'] . ',' . $coordinate['long'] . '&destinations=' . $data2["latitude"] . ',' . $data2["longitude"] . '&mode=walking');
+      $dist = json_decode($dist);
+      //var_dump($dist);
+      if (!isset($dist->{'rows'}[0]->{'elements'}[0]->{'distance'}->{'value'}))
+      {
+          var_dump($dist);
+          die("error");
+      }
+      $cur_dist = $dist->{'rows'}[0]->{'elements'}[0]->{'distance'}->{'value'};
+      if (!isset($min_dist))
+      {
+          $id_min_dist = $data2['idStationApi'];
+          $min_dist = $cur_dist;
+      }
+      elseif ($min_dist >= $cur_dist)
+      {
+          $id_min_dist = $data2['idStationApi'];
+          $min_dist = $cur_dist;
+      }
+  }
+  $info = getInfoStation($id_min_dist);
+  $info->distToStation = $min_dist;
   return ($info);
+}
+
+function getInfoStopPoint($id)
+{
+    global $bdd;
+
+    $request = $bdd->prepare("SELECT * FROM `stopPoint` WHERE `idStopPoint` = :id");
+    $request->execute(array('id' => $id));
+    $infoStation = $request->fetch(PDO::FETCH_ASSOC);
+
+    $data = new stdClass();
+    $data->name = $infoStation['name'];
+    $data->id = $infoStation['idStopPoint'];
+    $data->coordinates = array('long' => $infoStation['longitude'],'lat' => $infoStation['latitude']);
+    //var_dump($data);
+    return ($data);
+}
+
+function getClosestStopPoint($coordinate)
+{
+    global $bdd;
+    $data = $bdd->prepare("SELECT `idStopPoint`, `latitude`, `longitude`, SQRT( ABS(`latitude`-{$coordinate['lat']}))+SQRT(ABS(`longitude` - {$coordinate['long']})) AS 'test' FROM `stopPoint` WHERE SQRT( ABS(`latitude` - {$coordinate['lat']}))+SQRT(ABS(`longitude` - {$coordinate['long']})) IS NOT null ORDER BY test ASC limit 3");
+    $data->execute();
+
+    $tab_data = array();
+    while ($data2 = $data->fetch(PDO::FETCH_ASSOC))
+    {
+        array_push($tab_data, $data2);
+    }
+    foreach ($tab_data as $data2)
+    {
+        $dist = my_get('https://maps.googleapis.com/maps/api/distancematrix/json?origins=' . $coordinate['lat'] . ',' . $coordinate['long'] . '&destinations=' . $data2["latitude"] . ',' . $data2["longitude"] . '&mode=walking');
+        $dist = json_decode($dist);
+        //var_dump($dist);
+        if (!isset($dist->{'rows'}[0]->{'elements'}[0]->{'distance'}->{'value'}))
+        {
+            var_dump($dist);
+            die("error");
+        }
+        $cur_dist = $dist->{'rows'}[0]->{'elements'}[0]->{'distance'}->{'value'};
+        if (!isset($min_dist))
+        {
+            $id_min_dist = $data2['idStopPoint'];
+            $min_dist = $cur_dist;
+        }
+        elseif ($min_dist >= $cur_dist)
+        {
+            $id_min_dist = $data2['idStopPoint'];
+            $min_dist = $cur_dist;
+        }
+    }
+    $info = getInfoStopPoint($id_min_dist);
+    $info->distToStation = $min_dist;
+    return ($info);
 }
 
 function get_coordinate($adresse)
