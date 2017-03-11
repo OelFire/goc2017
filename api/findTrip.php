@@ -1,7 +1,8 @@
 <?php
 
 include_once("configDb.php");
-include_once("function.php");
+include_once ("function.php");
+include_once("findClosest.php");
 
 /*if (!isset($_GET["longStart"]) || !isset($_GET["latStart"]))
 {
