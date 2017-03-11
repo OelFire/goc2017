@@ -72,7 +72,6 @@ echo $adress;
 
 function get_closest_station($coordinate)
 {
-  $key = "AIzaSyAiht4VjPTI9bMut7kT0fe6WYx-67Xv9GQ";
   global $bdd;
   $data = $bdd->prepare('select `id`, `latitude`, `longitude`, SQRT( ABS(`latitude`-'.$coordinate['lat'].'))+SQRT(ABS(`longitude`-'.$coordinate['long'].')) AS `test` from stations_velo where SQRT( ABS(`latitude`-'.$coordinate['lat'].'))+SQRT(ABS(`longitude`-'.$coordinate['long'].')) is not null order by test asc limit 3');
   $data->execute();
