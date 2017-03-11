@@ -1,5 +1,7 @@
 <?php
 
+include_once("configDb.php");
+
 function my_get($URL)
 {
   $c = curl_init();
@@ -12,9 +14,15 @@ function my_get($URL)
   else return FALSE;
 }
 
-function get_info_station($id)
+function getInfoStation($id)
 {
-  $dataJ = my_get('https://api.jcdecaux.com/vls/v1/stations/'.$id.'?contract=Nancy&apiKey=58a7596376f3ae8c4af270a5abc6b7c04ecff44c');
+    global $bdd;
+
+    $request = $bdd->prepare("SELECT * FROM section` WHERE `idSectionApi` = :id");
+    $request->execute(array('id' => $id));
+    $infoStation = $request->fetch();
+    var_dump($infoStation);
+    /*$dataJ = my_get('https://api.jcdecaux.com/vls/v1/stations/'.$id.'?contract=Nancy&apiKey=58a7596376f3ae8c4af270a5abc6b7c04ecff44c');
   $data = json_decode($dataJ);
   $new_data = array('banking' => $data->{'banking'},
 		    'status' => $data->{'status'},
@@ -24,7 +32,7 @@ function get_info_station($id)
 		    'longitude' => $data->{'position'}->{'lng'},
 		    'latitude' => $data->{'position'}->{'lat'},
 		    'nom' => $data->{'name'});
-  return ($new_data);
+  return ($new_data);*/
 }
 
 function get_total_station()
@@ -70,10 +78,10 @@ $adress = $rue." ".$ville." ".$departement." ".$pays;
 echo $adress;
 }
 
-function get_closest_station($coordinate)
+function getClosestStation($coordinate)
 {
   global $bdd;
-  $data = $bdd->prepare('select `id`, `latitude`, `longitude`, SQRT( ABS(`latitude`-'.$coordinate['lat'].'))+SQRT(ABS(`longitude`-'.$coordinate['long'].')) AS `test` from stations_velo where SQRT( ABS(`latitude`-'.$coordinate['lat'].'))+SQRT(ABS(`longitude`-'.$coordinate['long'].')) is not null order by test asc limit 3');
+  $data = $bdd->prepare('SELECT `idStationApi`, `latitude`, `longitude`, SQRT( ABS(`latitude`-'.$coordinate['lat'].'))+SQRT(ABS(`longitude`-'.$coordinate['long'].')) AS `test` FROM `station WHERE SQRT( ABS(`latitude`-'.$coordinate['lat'].'))+SQRT(ABS(`longitude`-'.$coordinate['long'].')) IS NOT null ORDER BY test ASC limit 3');
   $data->execute();
 
   $tab_data = array();
@@ -81,31 +89,32 @@ function get_closest_station($coordinate)
     array_push($tab_data, $data2);
   $stop = 1;
   while ($stop == 1)
-    {
+  {
       $stop = 0;
-      foreach($tab_data as $data2)
-	{
-	    $dist = my_get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='.$coordinate['lat'].','.$coordinate['long'].'&destinations='.$data2["latitude"].','.$data2["longitude"].'&mode=walking');
-	  $dist = json_decode($dist);
-	  //var_dump($dist);
-	  if (!isset($dist->{'rows'}[0]->{'elements'}[0]->{'distance'}->{'value'}))
-	    {
-	      var_dump($dist);
-	      die("error");
-	    }
-	  $cur_dist = $dist->{'rows'}[0]->{'elements'}[0]->{'distance'}->{'value'};
-	  if (!isset($min_dist))
-	    {
-	      $id_min_dist = $data2['id'];
-	      $min_dist = $cur_dist;
-	    }
-	  elseif ($min_dist >= $cur_dist)
-	    {
-	      $id_min_dist = $data2['id'];
-	      $min_dist = $cur_dist;
-	    }
-	}
-      $info = get_info_station($id_min_dist);
+      foreach ($tab_data as $data2)
+      {
+          $dist = my_get('https://maps.googleapis.com/maps/api/distancematrix/json?origins=' . $coordinate['lat'] . ',' . $coordinate['long'] . '&destinations=' . $data2["latitude"] . ',' . $data2["longitude"] . '&mode=walking');
+          $dist = json_decode($dist);
+          //var_dump($dist);
+          if (!isset($dist->{'rows'}[0]->{'elements'}[0]->{'distance'}->{'value'}))
+          {
+              var_dump($dist);
+              die("error");
+          }
+          $cur_dist = $dist->{'rows'}[0]->{'elements'}[0]->{'distance'}->{'value'};
+          if (!isset($min_dist))
+          {
+              $id_min_dist = $data2['idStationApi'];
+              $min_dist = $cur_dist;
+          }
+          elseif ($min_dist >= $cur_dist)
+          {
+              $id_min_dist = $data2['idStationApi'];
+              $min_dist = $cur_dist;
+          }
+      }
+      $info = getInfoStation($id_min_dist);
+      die();
       /* if ($info['nb_dispo'] == 0)
 	 {
 	 $i = 0;
@@ -117,7 +126,7 @@ function get_closest_station($coordinate)
 	 $i++;
 	 }
 	 }*/
-    }
+  }
   array_push($info, $min_dist);
   //var_dump($info);
   return ($info);
