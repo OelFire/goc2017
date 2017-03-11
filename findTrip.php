@@ -13,11 +13,11 @@ if (!isset($_GET["longEnd"]) || !isset($_GET["latEnd"]))
     die();
 }*/
 
-$startPoint = array('long' => 6.1319346/*$_GET["longStart"]*/, 'lat' => 49.61162100000001/*$_GET["latStart"]*/);
+$startPoint = array('long' => 6.114977680291502/*$_GET["longStart"]*/, 'lat' => 49.60185748029151/*$_GET["latStart"]*/);
 //$endPoint = array('long' => $_GET["longEnd"], 'lat' => $_GET["latEnd"]);
 
-$startStation = getClosestStation($startPoint);
+//$startStation = getClosestStation($startPoint);
 //$endStation = getClosestStation($endPoint);
-//$startStopPoint = getClosestStopPoint($startPoint);
+$startStopPoint = getClosestStopPoint($startPoint);
 //$endStopPoint = getClosestStopPoint($endPoint);
 
