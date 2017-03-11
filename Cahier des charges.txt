@@ -1,0 +1,99 @@
+Situation.txt
+
+
+
+
+QUAND ON RECHERCHE UN ENDROIT ==> 
+
+Pick all max dist for all travel type (Bike, foot)
+
+Check all close depart points (< maxDistWalk km) and list them (bike, train, bus, etc)
+
+Choisir le type de transport que l'on désire : 
+		--> Vitesse
+		--> Économie de $$$ €€€ money money maggle
+		--> Écologie
+		--> Type de transport
+
+POLUTION:
+	--> Foot / Bike = 0
+	--> Commun transport (bus, tram) = 1
+	--> Car = 2
+
+// 		VÉLO 		// 
+	BikeTravelTime = (API - DIST CLOSEST AVAIBLE STATION --> POINT B)
+	FootTravelTime = (API - DIST POINT A --> CLOSEST AVAIBLE STATION)
+	BikeTravelDistance = (API - DIST CLOSEST AVAIBLE STATION --> POINT B)
+	FootTravelDistance = (API - DIST POINT A --> CLOSEST AVAIBLE STATION)
+	ActualPriceBike	= (LocationBikePrice)
+	Pollution = 0 
+
+		CHOOSE IF 
+			--> ActualBikeTravelDistance < MaxBikeTravelDistance && ActualBikeFootDistance < MaxFootTravelDistance 
+			--> Il ne pleut pas
+				Si Vitesse --> (BikeTravelTime + FootTravelTime < AllOtherTravelTime)
+				Si Econome de $$$ --> (Si AcutalPriceBike < AllOtherPrice)
+				Si Écologie --> Vélo
+				Si Type de Transport = velo --> Vélo
+  
+
+// 		Walking 		// 
+	WalkingTravelTime = (API - DIST POINT A --> DIST POINT B) 					DONE
+	WalkingTravelDistance = (API - DIST POINT A --> DIST POINT B )				DONE
+	ActualPriceWalking	= 0														DONE
+	Pollution = 0 																DONE
+
+		CHOOSE IF 
+			--> ActualWalkingTravelDistance < MaxWalkingTravelDistance 
+			--> Il ne pleut pas
+				Si Vitesse --> (WalkingTravelTime < AllOtherTravelTime)
+				Si Econome de $$$ --> (Si AcutalPriceBike < AllOtherPrice)
+				Si Écologie --> Walking (this)
+				Si Type de Transport = Walking --> Walking (this)
+  
+
+// 		BUS 		// 
+	FootTravelTime = (API - DIST POINT A --> CLOSEST AVAIBLE STATION)
+	BusTravelTime = (API - DIST CLOEST AVAIBLE STATION --> DIST POINT B)
+	FootTravelDistance = (API - DIST POINT A --> CLOSEST AVAIBLE STATION)
+	BusTravelTime = (API - DIST CLOEST AVAIBLE STATION --> DIST POINT B)
+	ActualPriceBus	= PriceTicketBus
+	Pollution = 1  
+
+		CHOOSE IF 
+			--> ActualFootDistance < MaxFootTravelDistance 
+				Si Vitesse --> (Bus TravelTime < AllOtherTravelTime)
+				Si Econome de $$$ --> (Si AcutalPriceBus < AllOtherPrice)
+				Si Écologie --> Privilégier a Foot (this)
+				Si Type de Transport = bus --> Bus  (this)
+  
+
+// 		Tram 		// 
+	FootTravelTime = (API - DIST POINT A --> CLOSEST AVAIBLE STATION)
+	TramTravelTime = (API - DIST CLOEST AVAIBLE STATION --> DIST POINT B)
+	FootTravelDistance = (API - DIST POINT A --> CLOSEST AVAIBLE STATION)
+	TramTravelTime = (API - DIST CLOEST AVAIBLE STATION --> DIST POINT B)
+	ActualPriceTram	= PriceTicketTram
+	Pollution = 1  
+
+		CHOOSE IF 
+			--> ActualFootDistance < MaxFootTravelDistance 
+				Si Vitesse --> (Tram TravelTime < AllOtherTravelTime)
+				Si Econome de $$$ --> (Si AcutalPriceTram < AllOtherPrice)
+				Si Écologie --> Foot 
+				Si Type de Transport = Tram --> Tram (this)
+  
+
+// 		Car		// 
+	CarTravelTime = (API - DIST POINT A --> DIST POINT B)
+	CarTravelTime = (API - DIST POINT A --> DIST POINT B)
+	ActualPrice = dist * prix/km
+	Pollution = 1
+
+		CHOOSE IF 
+				Si Vitesse --> (CarTravelTime < AllOtherTravelTime)
+				Si Econome de $$$ --> (Si AcutalPriceCar < AllOtherPrice)
+				Si Écologie --> Bike 
+				Si Type de Transport = Car -->  (this)
+  
+
