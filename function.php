@@ -70,9 +70,13 @@ $adress = $rue." ".$ville." ".$departement." ".$pays;
 echo $adress;
 }
 
+function sendData($response) {
+  header('Content-Type: application/json');
+  echo json_encode($response, JSON_PRETTY_PRINT);
+}
+
 function get_closest_station($coordinate)
 {
-  $key = "AIzaSyAiht4VjPTI9bMut7kT0fe6WYx-67Xv9GQ";
   global $bdd;
   $data = $bdd->prepare('select `id`, `latitude`, `longitude`, SQRT( ABS(`latitude`-'.$coordinate['lat'].'))+SQRT(ABS(`longitude`-'.$coordinate['long'].')) AS `test` from stations_velo where SQRT( ABS(`latitude`-'.$coordinate['lat'].'))+SQRT(ABS(`longitude`-'.$coordinate['long'].')) is not null order by test asc limit 3');
   $data->execute();
@@ -86,10 +90,10 @@ function get_closest_station($coordinate)
       $stop = 0;
       foreach($tab_data as $data2)
 	{
-	    $dist = my_get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='.$coordinate['lat'].','.$coordinate['long'].'&destinations='.$data2["latitude"].','.$data2["longitude"].'&mode=walking');
-	  $dist = json_decode($dist);
+      $dist = my_get('https://maps.googleapis.com/maps/api/distancematrix/json?origins='.$coordinate['lat'].','.$coordinate['long'].'&destinations='.$data2["latitude"].','.$data2["longitude"].'&mode=walking');
+    $dist = json_decode($dist);
 	  //var_dump($dist);
-	  if (!isset($dist->{'rows'}[0]->{'elements'}[0]->{'distance'}->{'value'}))
+    if (!isset($dist->{'rows'}[0]->{'elements'}[0]->{'distance'}->{'value'}))
 	    {
 	      var_dump($dist);
 	      die("error");
