@@ -71,6 +71,38 @@ function get_coordinate($adresse)
   return ($real_cord);
 }
 
+function get_line_from_stoppoint($stopPoint){
+  global $bdd;
+
+//  print_r($stopPoint);
+  $req = $bdd->prepare("SELECT `idBusRoute`, `name` FROM `busRoute` WHERE `stopPointList` LIKE :stopPoint1 AND `stopPointList` LIKE :stopPoint2");
+  $req->execute(array('stopPoint1' => "%{$stopPoint[0]->id}%", 'stopPoint2' => "%{$stopPoint[1]->id}%"));
+  if ($req->rowCount() > 0){
+    return $req->fetchAll();
+  }
+  $first_line = $bdd->prepare("SELECT * FROM `busRoute` WHERE `stopPointList` LIKE :stopPoint1 LIMIT 1");
+  $first_line->execute(array('stopPoint1' => "%{$stopPoint[0]->id}%"));
+  $a = $first_line->fetch();
+
+  $seconde_line = $bdd->prepare("SELECT * FROM `busRoute` WHERE `stopPointList` LIKE :stopPoint1 LIMIT 1");
+  $seconde_line->execute(array('stopPoint1' => "%{$stopPoint[1]->id}%"));
+  $b = $seconde_line->fetch();
+  $c = array_intersect(unserialize($a['stopPointList']), unserialize($b['stopPointList']));
+
+  $d = array_shift($c);
+  $req = $bdd->prepare("SELECT `idBusRoute`, `name` FROM `busRoute` WHERE `stopPointList` LIKE :stopPoint1 AND `stopPointList` LIKE :stopPoint2");
+  $req->execute(array('stopPoint1' => "%{$stopPoint[0]->id}%", 'stopPoint2' => "%{$d}%"));
+  $e = $req->fetch(PDO::FETCH_ASSOC);
+
+  $req = $bdd->prepare("SELECT `idBusRoute`, `name` FROM `busRoute` WHERE `stopPointList` LIKE :stopPoint1 AND `stopPointList` LIKE :stopPoint2");
+  $req->execute(array('stopPoint1' => "%{$stopPoint[1]->id}%", 'stopPoint2' => "%{$d}%"));
+  $f = $req->fetch(PDO::FETCH_ASSOC);
+
+  $d = getInfoStopPoint($d);
+
+  return array(0 => $e, 1 => $d, 2 => $f);
+}
+
 function one_var_coord($longitude, $latitude)
 {
   $real_cord = array('long' => $longitude,
