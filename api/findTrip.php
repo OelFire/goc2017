@@ -4,8 +4,9 @@ include_once("configDb.php");
 include_once("function.php");
 include_once("timeTravel.php");
 include_once("findClosest.php");
+include_once("findBetterTransport.php");
 
-if (!isset($_GET["longStart"]) || !isset($_GET["latStart"]))
+/*if (!isset($_GET["longStart"]) || !isset($_GET["latStart"]))
 {
     http_response_code(400);
     die();
@@ -18,11 +19,11 @@ if (!isset($_GET["longEnd"]) || !isset($_GET["latEnd"]))
 
 $startPoint = array('long' => $_GET["longStart"], 'lat' => $_GET["latStart"]);
 $endPoint = array('long' => $_GET["longEnd"], 'lat' => $_GET["latEnd"]);
+*/
 
-/*
 $startPoint = array('long' => 6.114977680291502, 'lat' => 49.60185748029151);
 $endPoint = array('long' => 6.144977680291502, 'lat' => 49.62185748029151);
-*/
+
 $startStation = getClosestStation($startPoint);
 $endStation = getClosestStation($endPoint);
 $startStopPoint = getClosestStopPoint($startPoint);
@@ -63,6 +64,8 @@ $bus['id'] = "bus";
 $walk['id'] = 'walk';
 $bike['id'] = 'bike';
 
-$res = array(0 => $bus, 1 => $bike, 2 => $walk, 3 => $car);
+$res = findBetterTransport($car, $bus, $walk, $bike);
+
+//$res = array(0 => $bus, 1 => $bike, 2 => $walk, 3 => $car);
 
 sendData($res);
