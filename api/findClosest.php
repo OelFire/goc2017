@@ -22,7 +22,7 @@ function getInfoStation($id)
     $data->name = $infoStation['name'];
     $data->id = $infoStation['idStationApi'];
     $data->coordinates = array('long' => $infoStation['longitude'], 'lat' => $infoStation['latitude']);
-    //var_dump($data);
+    var_dump($data);
     return ($data);
 }
 
@@ -69,7 +69,7 @@ function getInfoStopPoint($id)
     $data->name = $infoStation['name'];
     $data->id = $infoStation['idStopPoint'];
     $data->coordinates = array('long' => $infoStation['longitude'], 'lat' => $infoStation['latitude']);
-    //var_dump($data);
+    var_dump($data);
     return ($data);
 }
 

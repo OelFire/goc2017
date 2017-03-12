@@ -2,6 +2,8 @@
 
 include_once("function.php");
 
+header("Access-Control-Allow-Origin: *");
+
 $tmp = my_get("https://api.tfl.lu/v1/Weather");
 if ($tmp == false)
 {
