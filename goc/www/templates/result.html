@@ -10,7 +10,7 @@
 
   </ion-header-bar>
 
-  <ion-content class="padding" style="background-image: url('/videos/img.png');webkit-filter: brightness(0.5);">
+  <ion-content class="padding" style="background-image: url('/videos/img.png');webkit-filter: brightness(0.5);background-size: cover;">
 
     <div class="card">
       <div class="item item-text-wrap" ng-if="meteo" style="padding: 5px 15px;">
@@ -30,11 +30,11 @@
     </div>
 
     <div class="card" ng-repeat="travel in travels track by $index">
-      <div class="item item-text-wrap item-icon-left">
-        <i class="icon fa fa-male fa-{{getIcon(travel.id)}}"></i>
-        {{travel.dist}}
-        {{travel.time}}
-        {{travel}}
+      <div class="item item-text-wrap item-icon-left" style="padding-left: 75px;">
+        <i class="icon fa fa-male fa-{{::getIcon(travel.id)}}"></i>
+        <div style="display:inline-block;float:left;"><i class="fa fa-road" aria-hidden="true"></i> {{travel.dist | distance}}</div><div style="display:inline-block;float:right;"><i class="fa fa-leaf" aria-hidden="true" style="color:#1C9970;"></i><i class="fa fa-fighter-jet" aria-hidden="true" style="color:#CC181E;"></i></div><br>
+        <div><i class="fa fa-clock-o" aria-hidden="true"></i> {{travel.time | secondsToTime}}</div><br>
+        <div ng-if="travel.nextDeparture.length > 0 && travel.nextDeparture" ng-repeat="depart in travel.nextDeparture" ng-show="depart != null">{{depart}}</div>
 
       </div>
     </div>

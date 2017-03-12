@@ -13,7 +13,7 @@
     </div>
 
     <div class="row" ng-show="error">
-      <div class="col" style="color: #C21E30;background-color: #fff;text-align:center;border-radius: 5px;">
+      <div class="col" style="background-image: url('/videos/img.png');webkit-filter: brightness(0.5);background-size: cover;">
         <i class="fa fa-fw fa-warning" aria-hidden="true"></i> {{error}}
       </div>
     </div>
@@ -23,7 +23,7 @@
         <div style="background-color:#EAEAEA;height: 37px;border-top-left-radius: 5px;">
           <i class="icon ion-ios-shuffle-strong placeholder-icon" style="opacity: 0;font-size: 25px;display: block;"></i>
         </div>
-        <input type="search" required g-places-autocomplete name="dep" placeholder="Departure" ng-model="departure" ng-focus="focused(locateForm.dep)" ng-blur="blurred(locateForm.dep)" style="width: 95%;padding-left: 10px;color: #878787;">
+        <input type="search" required name="dep" placeholder="Departure" ng-model="departure" ng-focus="focused(locateForm.dep)" ng-blur="blurred(locateForm.dep)" style="width: 95%;padding-left: 10px;color: #878787;">
 
         <a ng-show="!departure.length" on-touch="departure = $root.addrObj">
           <i class="icon ion-ios-location" style="font-size:17px;"></i>
@@ -36,7 +36,7 @@
         <div style="background-color:#EAEAEA;height: 38px;border-bottom-left-radius: 5px;margin-top: -1px;">
           <i class="icon ion-ios-shuffle-strong placeholder-icon" style="margin-top: -13px;font-size: 25px;display: block;" on-touch="switchItem()"></i>
         </div>
-        <input type="search" required g-places-autocomplete name="arr" placeholder="Arrival" ng-model="arrival" ng-focus="focused(locateForm.arr)" ng-blur="blurred(locateForm.arr)" style="width: 95%;padding-left: 10px;color: #878787;">
+        <input type="search" required name="arr" placeholder="Arrival" ng-model="arrival" ng-focus="focused(locateForm.arr)" ng-blur="blurred(locateForm.arr)" style="width: 95%;padding-left: 10px;color: #878787;">
 
         <a ng-show="arrival != '' && locateForm.arr.$focused" on-touch="clearInput(2)">
 

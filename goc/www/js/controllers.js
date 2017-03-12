@@ -1,5 +1,38 @@
 angular.module('vez.controllers', [])
 
+  .filter('distance', function() {
+    return function(input) {
+      if (input >= 1000) {
+        return (input / 1000).toFixed(2) + ' km';
+      } else {
+        return input + ' m';
+      }
+    }
+  })
+
+  .filter('secondsToTime', function() {
+
+    function padTime(t) {
+      return t < 10 ? "0" + t : t;
+    }
+
+    return function(_seconds) {
+      if (typeof _seconds !== "number" || _seconds < 0)
+        return "00:00m";
+
+      var hours = Math.floor(_seconds / 3600),
+        minutes = Math.floor((_seconds % 3600) / 60),
+        seconds = Math.floor(_seconds % 60);
+
+      if (hours == 0) {
+        return padTime(minutes) + "m";
+
+      }
+
+      return padTime(hours) + "h " + padTime(minutes) + "m";
+    };
+  })
+
   .controller('DashCtrl', function($scope, $rootScope, $timeout, Uapi, $state) {
 
     var timer;
@@ -28,8 +61,7 @@ angular.module('vez.controllers', [])
 
     $scope.getLatitudeLongitudeDep = function(address) {
       var geocoder = new google.maps.Geocoder();
-      if (typeof address == "object")
-      {
+      if (typeof address == "object") {
         $rootScope.depObj = {};
         $rootScope.depObj.lat = address.geometry.location.lat();
         $rootScope.depObj.long = address.geometry.location.lng();
@@ -53,8 +85,7 @@ angular.module('vez.controllers', [])
 
     $scope.getLatitudeLongitudeAr = function(address) {
       geocoder = new google.maps.Geocoder();
-      if (typeof address == "object")
-      {
+      if (typeof address == "object") {
         $rootScope.arrivObj = {};
         $rootScope.arrivObj.lat = address.geometry.location.lat();
         $rootScope.arrivObj.long = address.geometry.location.lng();
@@ -148,7 +179,11 @@ angular.module('vez.controllers', [])
       if (id == "car")
         return "car";
       else if (id == "walk")
-        return "walk"
+        return "walk";
+      else if (id == "bus")
+        return "bus";
+      else
+        return "bicycle"
     }
 
     var getMeteo = function() {
