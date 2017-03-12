@@ -30,9 +30,11 @@ function  timeVelo($array)
         if ($i == 3)
             break;
         if ($i == 1)
-            $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins='.$array[$i]['lat'].','.$array[$i]['lng'].'&destinations='.$array[$i + 1]['lat'].','.$array[$i + 1]['lng'].'&mode=bicycling';
+            $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},
+                    {$array[$i]['lng']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['lng']}&mode=bicycling';
         else
-            $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins='.$array[$i]['lat'].','.$array[$i]['lng'].'&destinations='.$array[$i + 1]['lat'].','.$array[$i + 1]['lng'].'&mode=walking';
+            $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},
+                    {$array[$i]['lng']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['lng']}&mode=walking';
 
         $things = my_get($url);
         $things = json_decode($things);
@@ -57,9 +59,11 @@ function  timeBus($array)
     for ($i = 0; $i <= 2; $i++)
     {
         if ($i == 1)
-            $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins='.$array[$i]['lat'].','.$array[$i]['lng'].'&destinations='.$array[$i + 1]['lat'].','.$array[$i + 1]['lng'].'&mode=transit';
+            $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},
+                    {$array[$i]['lng']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['lng']}&mode=transit';
         else
-            $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins='.$array[$i]['lat'].','.$array[$i]['lng'].'&destinations='.$array[$i + 1]['lat'].','.$array[$i + 1]['lng'].'&mode=walking';
+            $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},
+                    {$array[$i]['lng']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['lng']}&mode=walking';
         $things = my_get($url);
         $things = json_decode($things);
 
