@@ -1,0 +1,44 @@
+<ion-view>
+  <ion-header-bar class="bar headerVez">
+
+    <div class="button-clear" style="color:#fff;padding-top: 6px;" on-touch="backToDash()">
+      <i class="ion-arrow-left-c"></i> Back
+    </div>
+
+    <h1 class="title" style="color:#fff;font-size:30px;"><i class="fa fa-fw {{counter == 1 ? 'fa-car' : (counter == 2 ? 'fa-bus' : (counter == 3 ? 'fa-train' : (counter == 4 ? 'fa-plane' : (counter == 5 ? 'fa-bicycle' : (counter == 6 ? 'fa-male' : 'fa-question')))))}}" aria-hidden="true"></i></h1>
+
+
+  </ion-header-bar>
+
+  <ion-content class="padding" style="background-image: url('/videos/img.png');webkit-filter: brightness(0.5);">
+
+    <div class="card">
+      <div class="item item-text-wrap" ng-if="meteo" style="padding: 5px 15px;">
+        <div style="display:inline-block;float:left;width: 23%;"><i class="fa fa-thermometer-half" aria-hidden="true" style="{{meteo.temp < 10 ? 'color:#4C9ED9' : (meteo.temp > 20 ? 'color:#C21E30' : '')}}"></i> {{::meteo.temp}}</div>
+        <div style="display:inline-block;width: 53%;text-align: center;"><i class="fa {{date < 7 && date > 20 ? 'fa-moon-o' : 'fa-sun-o'}}" aria-hidden="true"></i> {{::meteo.description}}</div>
+        <div style="display:inline-block;float:right;width: 23%;text-align: right;">{{::meteo.windSpeed}} <i class="fa fa-flag-o" aria-hidden="true" style="{{meteo.windSpeed < 90 ? 'color:#77A277' : 'color:#C21E30'}}"></i></div>
+      </div>
+      <div class="item item-text-wrap" ng-if="!meteo" style="padding: 5px 15px;">
+        <div style="display:inline-block;width: 100%;text-align: center;">Chargement...</div>
+      </div>
+    </div>
+
+    <div class="card" ng-if="loading && !travels">
+      <div class="item item-text-wrap" style="padding: 5px 15px;">
+        <div style="display:inline-block;width: 100%;text-align: center;">Chargement...</div>
+      </div>
+    </div>
+
+    <div class="card" ng-repeat="travel in travels track by $index">
+      <div class="item item-text-wrap item-icon-left">
+        <i class="icon fa fa-male fa-{{getIcon(travel.id)}}"></i>
+        {{travel.dist}}
+        {{travel.time}}
+        {{travel}}
+
+      </div>
+    </div>
+
+  </ion-content>
+
+</ion-view>

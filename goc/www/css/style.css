@@ -1,0 +1,68 @@
+/* Empty. Add your own CSS if you like */
+
+@font-face
+{
+    font-family: 'vez-font';
+
+    src: url('/css/font/Walkway_Black.ttf');
+}
+
+@import url('https://fonts.googleapis.com/css?family=Roboto');
+
+.iconHeaderVez
+{
+    font-size: 65px;
+
+    margin: 20px 0;
+
+    text-align: center;
+
+    color: #fff;
+}
+
+.titleHeaderVez
+{
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+
+    margin-bottom: -15px;
+    padding-left: 33px;
+
+    color: #fff;
+}
+
+.headerVez
+{
+    color: #fff;
+    border-color: #ce606c;
+    border-bottom-width: 3px;
+    background-color: #c21e30!important;
+}
+
+.footerVez .tabs
+{
+    height: 55px;
+    padding-top: 3px;
+    color: #fff;
+    border-color: #ce606c;
+    border-top-width: 3px;
+    background-color: #c21e30 !important;
+}
+
+.titleVez
+{
+    font-family: vez-font;
+    font-size: 37px!important;
+    color: #fff;
+}
+
+.bgvid.inner
+{
+    top: calc(-50vh + 200px);
+    left: calc(-50vw + 200px);
+    filter: url('data:image/svg+xml;utf9,<svg%20version=\'1.1\'%20xmlns=\'http://www.w3.org/2000/svg\'><filter%20id=\'blur\'><feGaussianBlur%20stdDeviation=\'10\'%20/></filter></svg>#blur');
+    -webkit-filter: blur(10px);
+    -ms-filter: blur(10px);
+    -o-filter: blur(10px);
+    filter: blur(10px);
+}
