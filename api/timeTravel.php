@@ -22,19 +22,15 @@ function  getTime($things)
 
 function  timeVelo($array)
 {
-    global  $bdd;
-
     $time = 0;
     $dist = 0;
     for ($i=0; $i <= 2; $i++) {
         if ($i == 3)
             break;
         if ($i == 1)
-            $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},
-                    {$array[$i]['lng']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['lng']}&mode=bicycling';
+            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},{$array[$i]['long']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['long']}&mode=bicycling";
         else
-            $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},
-                    {$array[$i]['lng']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['lng']}&mode=walking';
+            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},{$array[$i]['long']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['long']}&mode=walking";
 
         $things = my_get($url);
         $things = json_decode($things);
@@ -52,18 +48,14 @@ function  timeVelo($array)
 
 function  timeBus($array)
 {
-    global  $bdd;
-
     $time = 0;
     $dist = 0;
     for ($i = 0; $i <= 2; $i++)
     {
         if ($i == 1)
-            $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},
-                    {$array[$i]['lng']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['lng']}&mode=transit';
+            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},{$array[$i]['long']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['long']}&mode=transit";
         else
-            $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},
-                    {$array[$i]['lng']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['lng']}&mode=walking';
+            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},{$array[$i]['long']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['long']}&mode=walking";
         $things = my_get($url);
         $things = json_decode($things);
 
@@ -80,10 +72,7 @@ function  timeBus($array)
 
 function  time2Points($array, $methodTravel)
 {
-    global  $bdd;
-
-    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[0]['lat']},
-            {$array[0]['lng']}&destinations={$array[1]['lat']},{$array[1]['lng']}&mode={$methodTravel}";
+    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[0]['lat']},{$array[0]['long']}&destinations={$array[1]['lat']},{$array[1]['long']}&mode={$methodTravel}";
     $things = my_get($url);
     $things = json_decode($things);
 
