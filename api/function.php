@@ -75,10 +75,12 @@ function get_line_from_stoppoint($stopPoint){
   global $bdd;
 
 //  print_r($stopPoint);
-  $req = $bdd->prepare("SELECT `idBusRoute`, `name` FROM `busRoute` WHERE `stopPointList` LIKE :stopPoint1 AND `stopPointList` LIKE :stopPoint2");
+  $req = $bdd->prepare("SELECT `idBusRoute`, `name`  FROM `busRoute` WHERE `stopPointList` LIKE :stopPoint1 AND `stopPointList` LIKE :stopPoint2");
   $req->execute(array('stopPoint1' => "%{$stopPoint[0]->id}%", 'stopPoint2' => "%{$stopPoint[1]->id}%"));
   if ($req->rowCount() > 0){
-    return array(0 => $req->fetch());
+    $busRoute = $req->fetch(PDO::FETCH_ASSOC);
+    $busRoute['stopPointList'] = [get_stop_point_name($stopPoint[0]->id), get_stop_point_name($stopPoint[1]->id)];
+    return [$busRoute];
   }
   $first_line = $bdd->prepare("SELECT * FROM `busRoute` WHERE `stopPointList` LIKE :stopPoint1 LIMIT 1");
   $first_line->execute(array('stopPoint1' => "%{$stopPoint[0]->id}%"));
@@ -93,14 +95,24 @@ function get_line_from_stoppoint($stopPoint){
   $req = $bdd->prepare("SELECT `idBusRoute`, `name` FROM `busRoute` WHERE `stopPointList` LIKE :stopPoint1 AND `stopPointList` LIKE :stopPoint2");
   $req->execute(array('stopPoint1' => "%{$stopPoint[0]->id}%", 'stopPoint2' => "%{$d}%"));
   $e = $req->fetch(PDO::FETCH_ASSOC);
+  $e['stopPointList'] = [ get_stop_point_name($stopPoint[0]->id), get_stop_point_name($d)];
 
   $req = $bdd->prepare("SELECT `idBusRoute`, `name` FROM `busRoute` WHERE `stopPointList` LIKE :stopPoint1 AND `stopPointList` LIKE :stopPoint2");
   $req->execute(array('stopPoint1' => "%{$stopPoint[1]->id}%", 'stopPoint2' => "%{$d}%"));
   $f = $req->fetch(PDO::FETCH_ASSOC);
+  $f['stopPointList'] = [get_stop_point_name($d), get_stop_point_name($stopPoint[1]->id)];
 
   $d = getInfoStopPoint($d);
 
   return array(0 => $e, 1 => $d, 2 => $f);
+}
+
+function get_stop_point_name($id){
+  global $bdd;
+  $request = $bdd->prepare("SELECT `name` FROM `stopPoint` WHERE `idStopPoint` = :id");
+  $request->execute(array('id' => $id));
+  $infoStation = $request->fetch(PDO::FETCH_ASSOC);
+  return $infoStation['name'];
 }
 
 function one_var_coord($longitude, $latitude)

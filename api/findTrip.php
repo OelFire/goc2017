@@ -19,10 +19,10 @@ if (!isset($_GET["longEnd"]) || !isset($_GET["latEnd"]))
 $startPoint = array('long' => $_GET["longStart"], 'lat' => $_GET["latStart"]);
 $endPoint = array('long' => $_GET["longEnd"], 'lat' => $_GET["latEnd"]);
 
-
+/*
 /*$startPoint = array('long' => 6.114977680291502, 'lat' => 49.60185748029151);
 $endPoint = array('long' => 6.144977680291502, 'lat' => 49.62185748029151);*/
-
+*/
 
 $startStation = getClosestStation($startPoint);
 $endStation = getClosestStation($endPoint);
