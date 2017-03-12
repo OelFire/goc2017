@@ -37,19 +37,19 @@ POLUTION:
 				Si Type de Transport = velo --> Vélo
   
 
-// 		Pied 		// 
-	FootTravelTime = (API - DIST POINT A --> DIST POINT B)
-	FootTravelDistance = (API - DIST POINT A --> DIST POINT B )
-	ActualPriceFoot	= 0
-	Pollution = 0 
+// 		Walking 		// 
+	WalkingTravelTime = (API - DIST POINT A --> DIST POINT B) 					DONE
+	WalkingTravelDistance = (API - DIST POINT A --> DIST POINT B )				DONE
+	ActualPriceWalking	= 0														DONE
+	Pollution = 0 																DONE
 
 		CHOOSE IF 
-			--> ActualFootTravelDistance < MaxFootTravelDistance 
+			--> ActualWalkingTravelDistance < MaxWalkingTravelDistance 
 			--> Il ne pleut pas
-				Si Vitesse --> (FootTravelTime < AllOtherTravelTime)
+				Si Vitesse --> (WalkingTravelTime < AllOtherTravelTime)
 				Si Econome de $$$ --> (Si AcutalPriceBike < AllOtherPrice)
-				Si Écologie --> Foot (this)
-				Si Type de Transport = foot --> Foot (this)
+				Si Écologie --> Walking (this)
+				Si Type de Transport = Walking --> Walking (this)
   
 
 // 		BUS 		// 
