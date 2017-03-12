@@ -122,7 +122,7 @@ function one_var_coord($longitude, $latitude)
   return ($real_cord);
 }
 
-function findBusDeparture($stopPoint)
+function findBusDeparture($stopPoint, $lineName)
 {
     $coordinates = $stopPoint->coordinates;
     $long1 = str_replace(".", "", $coordinates['long']);
@@ -140,7 +140,7 @@ function findBusDeparture($stopPoint)
         $i += 1;
     }
 
-    $idBus = my_get("http://travelplanner.mobiliteit.lu/hafas/query.exe/dot?performLocating=2&tpl=stop2csv&stationProxy=yes&look_maxdist=150&look_x={$long}&look_y={$lat}");
+    $idBus = my_get("http://travelplanner.mobiliteit.lu/hafas/query.exe/dot?performLocating=2&tpl=stop2csv&stationProxy=yes&look_maxdist=10&look_x={$long}&look_y={$lat}");
     if ($idBus == false)
     {
         http_response_code(444);
@@ -149,7 +149,7 @@ function findBusDeparture($stopPoint)
 
     $idBus = rtrim($idBus);
     $idBus = substr($idBus, 3, strlen($idBus) - 4);
-    var_dump($idBus);
+    //var_dump($idBus);
     $idBus = urlencode($idBus);
     $tmp = my_get("http://travelplanner.mobiliteit.lu/restproxy/departureBoard?accessId=cdt&format=json&id={$idBus}");
     if ($tmp == false)
@@ -158,11 +158,14 @@ function findBusDeparture($stopPoint)
         die();
     }
     $infoHour = json_decode($tmp, true);
+   // var_dump($infoHour);
+    //die();
 
     $res = array();
-    for ($i = 0 ; $i < 4 && count($infoHour['Departure']) > $i; $i++)
+    for ($i = 0 ; count($res) < 4 && count($infoHour['Departure']) > $i; $i++)
     {
-        $res[$i] = $infoHour['Departure'][$i]['rtTime'];
+        if ($infoHour['Departure'][$i]['Product']['line'] == $lineName)
+            $res[$i] = $infoHour['Departure'][$i]['rtTime'];
     }
     //var_dump($res);
     return ($res);

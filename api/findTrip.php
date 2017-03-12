@@ -5,7 +5,7 @@ include_once("function.php");
 include_once("timeTravel.php");
 include_once("findClosest.php");
 
-if (!isset($_GET["longStart"]) || !isset($_GET["latStart"]))
+/*if (!isset($_GET["longStart"]) || !isset($_GET["latStart"]))
 {
     http_response_code(400);
     die();
@@ -17,12 +17,11 @@ if (!isset($_GET["longEnd"]) || !isset($_GET["latEnd"]))
 }
 
 $startPoint = array('long' => $_GET["longStart"], 'lat' => $_GET["latStart"]);
-$endPoint = array('long' => $_GET["longEnd"], 'lat' => $_GET["latEnd"]);
+$endPoint = array('long' => $_GET["longEnd"], 'lat' => $_GET["latEnd"]);*/
 
-/*
-/*$startPoint = array('long' => 6.114977680291502, 'lat' => 49.60185748029151);
-$endPoint = array('long' => 6.144977680291502, 'lat' => 49.62185748029151);*/
-*/
+
+$startPoint = array('long' => 6.114977680291502, 'lat' => 49.60185748029151);
+$endPoint = array('long' => 6.144977680291502, 'lat' => 49.62185748029151);
 
 $startStation = getClosestStation($startPoint);
 $endStation = getClosestStation($endPoint);
@@ -33,6 +32,7 @@ $tmp = get_line_from_stoppoint(array(0 => $startStopPoint, 1 => $endStopPoint));
 if (count($tmp) == 1)
 {
     $bus = timeBus(array(0 => $startPoint, 1 => $startStopPoint->coordinates, 2 => $endStopPoint->coordinates, 3 => $endPoint));
+    $bus['nextDeparture'] = findBusDeparture($startStopPoint, $tmp['name']);
 }
 elseif (count($tmp) == 3)
 {
@@ -43,6 +43,8 @@ elseif (count($tmp) == 3)
     $bus3 = time2Points(array(0 => $endStopPoint->coordinates, 1 => $endPoint), "walking");
     $bus['dist'] = $bus['dist'] + $bus1['dist'] + $bus2['dist'] + $bus3['dist'];
     $bus['time'] = $bus['time'] + $bus1['time'] + $bus2['time'] + $bus3['time'];
+    $bus['nextDeparture'] = findBusDeparture($startStopPoint, $tmp[0]['name']);
+    $bus['nextDepartureInter'] = findBusDeparture($tmp[1], $tmp[2]['name']);
 }
 else
 {
@@ -55,7 +57,7 @@ $bike = timeVelo(array(0 => $startPoint, 1 => $startStation->coordinates, 2 => $
 $car = time2Points(array(0 => $startPoint, 1 => $endPoint), "driving");
 $walk = time2Points(array(0 => $startPoint, 1 => $endPoint), "walking");
 
-$bus['nextDeparture'] = findBusDeparture($startStopPoint);
+
 $car['id'] = "car";
 $bus['id'] = "bus";
 $walk['id'] = 'walk';
