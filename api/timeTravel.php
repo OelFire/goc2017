@@ -28,9 +28,9 @@ function  timeVelo($array)
         if ($i == 3)
             break;
         if ($i == 1)
-            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},{$array[$i]['long']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['long']}&mode=bicycling";
+            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},{$array[$i]['long']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['long']}&mode=bicycling&key=".APIKEY;
         else
-            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},{$array[$i]['long']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['long']}&mode=walking";
+            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},{$array[$i]['long']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['long']}&mode=walking&key=".APIKEY;
 
         $things = my_get($url);
         $things = json_decode($things);
@@ -53,9 +53,9 @@ function  timeBus($array)
     for ($i = 0; $i <= 2; $i++)
     {
         if ($i == 1)
-            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},{$array[$i]['long']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['long']}&mode=transit";
+            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},{$array[$i]['long']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['long']}&mode=transit&key=".APIKEY;
         else
-            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},{$array[$i]['long']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['long']}&mode=walking";
+            $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[$i]['lat']},{$array[$i]['long']}&destinations={$array[$i + 1]['lat']},{$array[$i + 1]['long']}&mode=walking&key=".APIKEY;
         $things = my_get($url);
         $things = json_decode($things);
 
@@ -72,7 +72,7 @@ function  timeBus($array)
 
 function  time2Points($array, $methodTravel)
 {
-    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[0]['lat']},{$array[0]['long']}&destinations={$array[1]['lat']},{$array[1]['long']}&mode={$methodTravel}";
+    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[0]['lat']},{$array[0]['long']}&destinations={$array[1]['lat']},{$array[1]['long']}&mode={$methodTravel}&key=".APIKEY;
     $things = my_get($url);
     $things = json_decode($things);
 
@@ -85,8 +85,8 @@ function  time2Points($array, $methodTravel)
 
 function  time2PointsKey($array, $methodTravel)
 {
-    $keyApi = "AIzaSyDWMtQAx6ocy8Z4lIcDh7FNOz9OOcJyc5k";
-    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[0]['lat']},{$array[0]['long']}&destinations={$array[1]['lat']},{$array[1]['long']}&mode={$methodTravel}&key={$keyApi}";
+
+    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[0]['lat']},{$array[0]['long']}&destinations={$array[1]['lat']},{$array[1]['long']}&mode={$methodTravel}&key=".APIKEY;
     $things = my_get($url);
     $things = json_decode($things);
 

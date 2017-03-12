@@ -49,15 +49,15 @@ function get_all_velo()
 
 function get_address($coord)
 {
-$url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng='.$coord['lat'].','.$coord['long'].'&sensor=true';
-$data = my_get($url);
-$jsondata = json_decode($data);
-$rue = $jsondata->{'results'}[0]->{'address_components'}[1]->{'long_name'};
-$ville = $jsondata->{'results'}[0]->{'address_components'}[2]->{'long_name'};
-$departement = $jsondata->{'results'}[0]->{'address_components'}[3]->{'long_name'};
-$pays = $jsondata->{'results'}[0]->{'address_components'}[5]->{'long_name'};
-$adress = $rue." ".$ville." ".$departement." ".$pays;
-echo $adress;
+    $url = 'https://maps.googleapis.com/maps/api/geocode/json?latlng=' . $coord['lat'] . ',' . $coord['long'] . '&sensor=true';
+    $data = my_get($url);
+    $jsondata = json_decode($data);
+    $rue = $jsondata->{'results'}[0]->{'address_components'}[1]->{'long_name'};
+    $ville = $jsondata->{'results'}[0]->{'address_components'}[2]->{'long_name'};
+    $departement = $jsondata->{'results'}[0]->{'address_components'}[3]->{'long_name'};
+    $pays = $jsondata->{'results'}[0]->{'address_components'}[5]->{'long_name'};
+    $adress = $rue . " " . $ville . " " . $departement . " " . $pays;
+    echo $adress;
 }
 
 function get_coordinate($adresse)
@@ -108,4 +108,50 @@ function one_var_coord($longitude, $latitude)
   $real_cord = array('long' => $longitude,
                      'lat' => $latitude);
   return ($real_cord);
+}
+
+function findBusDeparture($stopPoint)
+{
+    $coordinates = $stopPoint->coordinates;
+    $long1 = str_replace(".", "", $coordinates['long']);
+    $lat1 = str_replace(".", "", $coordinates['lat']);
+
+    $long = "0000000";
+    $lat = "00000000";
+    $i = 0;
+    while ($i < 7)
+    {
+        if ($i < strlen($long1))
+            $long[$i] = $long1[$i];
+        if ($i < strlen($lat1))
+            $lat[$i] = $lat1[$i];
+        $i += 1;
+    }
+
+    $idBus = my_get("http://travelplanner.mobiliteit.lu/hafas/query.exe/dot?performLocating=2&tpl=stop2csv&stationProxy=yes&look_maxdist=150&look_x={$long}&look_y={$lat}");
+    if ($idBus == false)
+    {
+        http_response_code(444);
+        die();
+    }
+
+    $idBus = rtrim($idBus);
+    $idBus = substr($idBus, 3, strlen($idBus) - 4);
+    var_dump($idBus);
+    $idBus = urlencode($idBus);
+    $tmp = my_get("http://travelplanner.mobiliteit.lu/restproxy/departureBoard?accessId=cdt&format=json&id={$idBus}");
+    if ($tmp == false)
+    {
+        http_response_code(444);
+        die();
+    }
+    $infoHour = json_decode($tmp, true);
+
+    $res = array();
+    for ($i = 0 ; $i < 4 && count($infoHour['Departure']) > $i; $i++)
+    {
+        $res[$i] = $infoHour['Departure'][$i]['rtTime'];
+    }
+    //var_dump($res);
+    return ($res);
 }
