@@ -50,13 +50,16 @@ else
     die();
 }
 
+$bike = timeVelo(array(0 => $startPoint, 1 => $startStation->coordinates, 2 => $endStation->coordinates, 3 => $endPoint));
+
 $car = time2Points(array(0 => $startPoint, 1 => $endPoint), "driving");
 $walk = time2Points(array(0 => $startPoint, 1 => $endPoint), "walking");
 
 $car['id'] = "car";
 $bus['id'] = "bus";
 $walk['id'] = 'walk';
+$bike['id'] = 'bike';
 
-$res = array(0 => $bus, 1 => $walk, 2 => $car);
+$res = array(0 => $bus, 1 => $bike, 2 => $walk, 3 => $car);
 
 sendData($res);
