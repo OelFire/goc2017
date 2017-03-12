@@ -74,11 +74,12 @@ function  timeBus($array)
     return $final;
 }
 
-function  timeWalking($array)
+function  time2Points($array, $methodTravel)
 {
     global  $bdd;
 
-    $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins='.$array[0]['lat'].','.$array[0]['lng'].'&destinations='.$array[1]['lat'].','.$array[1]['lng'].'&mode=walking';
+    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[0]['lat']},
+            {$array[0]['lng']}&destinations={$array[1]['lat']},{$array[1]['lng']}&mode={$methodTravel}";
     $things = my_get($url);
     $things = json_decode($things);
 
