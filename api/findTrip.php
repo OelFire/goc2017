@@ -16,12 +16,20 @@ if (!isset($_GET["longEnd"]) || !isset($_GET["latEnd"]))
     die();
 }*/
 
-$startPoint = array('long' => 6.114977680291502/*$_GET["longStart"]*/, 'lat' => 49.60185748029151/*$_GET["latStart"]*/);
-$endPoint = array('long' => 6.144977680291502/*$_GET["longEnd"]*/, 'lat' => 49.62185748029151/*$_GET["latEnd"*/);
+/*$startPoint = array('long' => $_GET["longStart"], 'lat' => $_GET["latStart"]);
+$endPoint = array('long' => $_GET["longEnd"], 'lat' => $_GET["latEnd");*/
+
+$startPoint = array('long' => 6.114977680291502, 'lat' => 49.60185748029151);
+$endPoint = array('long' => 6.144977680291502, 'lat' => 49.62185748029151);
 
 $startStation = getClosestStation($startPoint);
 $endStation = getClosestStation($endPoint);
 $startStopPoint = getClosestStopPoint($startPoint);
 $endStopPoint = getClosestStopPoint($endPoint);
 
-$res = array('')
+$car = time2Points(array(0 => $startPoint, 1 => $endPoint), "driving");
+$walk = time2Points(array(0 => $startPoint, 1 => $endPoint), "walking");
+
+$res = array(0 => $car, 1 => $walk);
+
+sendData($res);
