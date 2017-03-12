@@ -2,7 +2,6 @@
 
 include_once "function.php";
 
-header("Access-Control-Allow-Origin: *");
 
 if (!isset($_GET['lat']) || !isset($_GET['long'])){
   http_response_code(400);

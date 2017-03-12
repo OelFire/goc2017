@@ -5,8 +5,6 @@ include_once("function.php");
 include_once("timeTravel.php");
 include_once("findClosest.php");
 
-header("Access-Control-Allow-Origin: *");
-
 if (!isset($_GET["longStart"]) || !isset($_GET["latStart"]))
 {
     http_response_code(400);
