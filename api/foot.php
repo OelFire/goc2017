@@ -1,14 +1,18 @@
 <?php
 
-include_once "function.php" 
+include_once "function.php";
 
 
-if ((!isset($center_lat = $_GET["lat1"])) || (!isset($center_lng = $_GET["lng1"]))
-	|| (!isset($other_lat = $_GET["lat2"])) || (!isset($other_lng = $_GET["lng2"])))
+if ((!isset($_GET["lat1"])) || (!isset($_GET["lng1"]))
+		|| (!isset($_GET["lat2"])) || (!isset($_GET["lng2"])))
 {
 	http_response_code(400);
 	die("error in getting lat and lng");
 }
+$center_lat = $_GET["lat1"];
+$center_lng = $_GET["lng1"];
+$other_lat = $_GET["lat2"];
+$other_lng = $_GET["lng2"];
 
 $url = 'https://maps.googleapis.com/maps/api/distancematrix/json?origins='.$center_lat.','.$center_lng.'&destinations='.$other_lat.','.$other_lng.'&mode=walking';
 $dist = my_get($url);
