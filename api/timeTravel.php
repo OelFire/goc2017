@@ -82,3 +82,17 @@ function  time2Points($array, $methodTravel)
     ];
     return ($final);
 }
+
+function  time2PointsKey($array, $methodTravel)
+{
+    $keyApi = "AIzaSyDWMtQAx6ocy8Z4lIcDh7FNOz9OOcJyc5k";
+    $url = "https://maps.googleapis.com/maps/api/distancematrix/json?origins={$array[0]['lat']},{$array[0]['long']}&destinations={$array[1]['lat']},{$array[1]['long']}&mode={$methodTravel}&key={$keyApi}";
+    $things = my_get($url);
+    $things = json_decode($things);
+
+    $final = [
+        "dist" => getDist($things),
+        "time" => getTime($things)
+    ];
+    return ($final);
+}

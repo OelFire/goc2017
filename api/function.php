@@ -78,7 +78,7 @@ function get_line_from_stoppoint($stopPoint){
   $req = $bdd->prepare("SELECT `idBusRoute`, `name` FROM `busRoute` WHERE `stopPointList` LIKE :stopPoint1 AND `stopPointList` LIKE :stopPoint2");
   $req->execute(array('stopPoint1' => "%{$stopPoint[0]->id}%", 'stopPoint2' => "%{$stopPoint[1]->id}%"));
   if ($req->rowCount() > 0){
-    return $req->fetchAll();
+    return array(0 => $req->fetch());
   }
   $first_line = $bdd->prepare("SELECT * FROM `busRoute` WHERE `stopPointList` LIKE :stopPoint1 LIMIT 1");
   $first_line->execute(array('stopPoint1' => "%{$stopPoint[0]->id}%"));
