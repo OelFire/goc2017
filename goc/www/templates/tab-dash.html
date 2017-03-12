@@ -1,0 +1,53 @@
+<ion-view>
+  <ion-header-bar class="bar headerVez">
+    <h1 class="title titleVez">Vez</h1>
+  </ion-header-bar>
+
+  <ion-content class="padding" style="background-image: url('/videos/img.png');webkit-filter: brightness(0.5);">
+
+
+    <div class="row">
+      <div class="col iconHeaderVez">
+        <i class="fa fa-fw {{counter == 1 ? 'fa-car' : (counter == 2 ? 'fa-bus' : (counter == 3 ? 'fa-train' : (counter == 4 ? 'fa-plane' : (counter == 5 ? 'fa-bicycle' : (counter == 6 ? 'fa-male' : 'fa-question')))))}}" aria-hidden="true"></i>
+      </div>
+    </div>
+
+    <div class="row" ng-show="error">
+      <div class="col" style="background-image: url('/videos/img.png');webkit-filter: brightness(0.5);background-size: cover;">
+        <i class="fa fa-fw fa-warning" aria-hidden="true"></i> {{error}}
+      </div>
+    </div>
+
+    <form name="locateForm" ng-submit="searchResult(arrival, departure)" novalidate>
+      <div class="item-input-wrapper" style="background-color:#FCFCFC;border-bottom-left-radius: 0px;border-bottom-right-radius: 0px;padding-left:0;">
+        <div style="background-color:#EAEAEA;height: 37px;border-top-left-radius: 5px;">
+          <i class="icon ion-ios-shuffle-strong placeholder-icon" style="opacity: 0;font-size: 25px;display: block;"></i>
+        </div>
+        <input type="search" required name="dep" placeholder="Departure" ng-model="departure" ng-focus="focused(locateForm.dep)" ng-blur="blurred(locateForm.dep)" style="width: 95%;padding-left: 10px;color: #878787;">
+
+        <a ng-show="!departure.length" on-touch="departure = $root.addrObj">
+          <i class="icon ion-ios-location" style="font-size:17px;"></i>
+        </a>
+        <a ng-show="departure.length > 0 && locateForm.dep.$focused" on-touch="clearInput(1)">
+          <i class="icon ion-ios-close placeholder-icon" style="font-size:17px;"></i>
+        </a>
+      </div>
+      <div class="item-input-wrapper" style="background-color:#FCFCFC;border-top-left-radius: 0px;border-top-right-radius: 0px;padding-left:0;border-top: 1px dashed #EAEAEA;">
+        <div style="background-color:#EAEAEA;height: 38px;border-bottom-left-radius: 5px;margin-top: -1px;">
+          <i class="icon ion-ios-shuffle-strong placeholder-icon" style="margin-top: -13px;font-size: 25px;display: block;" on-touch="switchItem()"></i>
+        </div>
+        <input type="search" required name="arr" placeholder="Arrival" ng-model="arrival" ng-focus="focused(locateForm.arr)" ng-blur="blurred(locateForm.arr)" style="width: 95%;padding-left: 10px;color: #878787;">
+
+        <a ng-show="arrival != '' && locateForm.arr.$focused" on-touch="clearInput(2)">
+
+          <i class="icon ion-ios-close placeholder-icon" style="font-size:17px;"></i>
+
+        </a>
+
+      </div>
+
+      <button class="button button-block" type="submit" ng-disabled="locateForm.$invalid" style="background-color: #c21e30;margin-left:0;outline:none;color: #fff;"><i class="fa fa-paper-plane-o" aria-hidden="true" style="color: #fff;"></i> Let's go !</button>
+    </form>
+  </ion-content>
+
+</ion-view>
